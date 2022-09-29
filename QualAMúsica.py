@@ -5,7 +5,6 @@ letras = {}
 
 opcao = -1
 
-print("---ProgFy: o melhor streaming de música---")
 print("---Cadastro de músicas---\n") 
 
 ## load musicas ja cadastradas
