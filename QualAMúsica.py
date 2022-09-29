@@ -1,75 +1,89 @@
-# variáveis principais 
-
 nomes = [] 
 cantores = [] 
-n_tocadas = [] 
+n_tocadas = []
 letras = {} 
 
 opcao = -1
 
 print("---ProgFy: o melhor streaming de música---")
-print("---Cadastro de músicas---") 
+print("---Cadastro de músicas---\n") 
 
-## inicio do item a)
+## load musicas ja cadastradas
 
-opçao_cadastro = 1
+with open("musicas.txt", "r") as biblioteca:
+    for linha in biblioteca:
+        linhasplit = linha.split("/")
+        nomes.append(linhasplit[0])
+        cantores.append(linhasplit[1])
+        letras[linhasplit[0]] = linhasplit[2]
 
-while opçao_cadastro == 1:
-    musica=input("Digite o nome da música: ")
-    nomes.append(musica)
+##
 
-    cantor=input("Digite o cantor da música: ")
-    cantores.append(cantor)
+while opcao != 0:
 
-    letra=input("Digite a letra da música: ")
-    letras[musica] = letra
+    ## Menu principal
 
-    opçao_cadastro = int(input("Deseja cadastrar outra música? (1 - sim. outro - não): "))
-    n_tocadas.append(0)
+    print("---Menu principal---\n") 
+    print("1 - Tocar música.")  
+    print("2 - Qual é a música?")
+    print("3 - Cadastrar nova música.")
+    print("0 - Sair.\n")
 
-## fim do item a) 
-
-print("---Menu principal---") 
-print("1 - Tocar música.") 
-print("2 - Calcular audiência.") 
-print("3 - Qual é a música?") 
-print("0 - Sair.")
-
-while opcao != 0: 
     opcao = int(input("Digite a opcao desejada: >"))
+    print("")
 
     if opcao == 1:  
-             ## inicio do item b) 
+         ## tocar música
 
         musica = input("Digite o nome da música: ")
-        indice= nomes.index(musica)
-        print("Música tocada. Nome: {}. Cantor: {}. Letra: {}".format(nomes[indice], cantores[indice], letras[musica]))
-        n_tocadas[indice] += 1
+        try:
+            indice= nomes.index(musica)
+            print("\nMúsica tocada. Nome: {}. Cantor: {}. Letra: {}".format(nomes[indice], cantores[indice], letras[musica]))
+        except ValueError or KeyError:
+            print("\nMúsica não encontrada")
+         ##
 
-             ## fim do item b) 
 
     elif opcao == 2:
-        
-             ## inicio do item c)
-        
-        for i in range(len(n_tocadas)):
-            if n_tocadas[i] > 0:
-                audiencia = (n_tocadas[i]/sum(n_tocadas))*100
-                print("Nome: {}. Audiência: {}% ".format(nomes[i], round(audiencia, 2)))
 
-             ## fim do item c)
+        ## achar música por palavras chave
+        
+        palavra = input("Digite uma palavra contida na música: ")
+
+        encontrada = 0
+        for i in letras:
+            string = letras[i].split()
+            if string.count(palavra) > 0:
+                print("Músicas com a palavra especificada:", i)
+                encontrada += 1
+        if encontrada == 0:
+            print("Nenhuma música encontrada")
+
+        ##
 
     elif opcao == 3:
 
-            ## inicio do item d)
-        
-        trecho = input("Digite um trecho: ")
-        for i in letras:
-            string = letras[i].split()
-            if string.count(trecho) > 0:
-                print("Músicas com o trecho especificado: ", i)
+        ## cadastro
 
-            ## fim do item d)
+        opçao_cadastro = 1
+
+        while opçao_cadastro == 1:
+            musica=input("Digite o nome da música: ")
+            nomes.append(musica.lower())
+
+            cantor=input("Digite o cantor da música: ")
+            cantores.append(cantor.lower())
+
+            letra=input("Digite a letra da música: ")
+            letras[musica] = letra.lower()
+
+            with open("musicas.txt", "a") as biblioteca:
+                biblioteca.write("{}/{}/{}\n".format(musica, cantor, letra))
+
+            opçao_cadastro = int(input("Deseja cadastrar outra música? (1 - sim. 2 - não): "))
+            n_tocadas.append(0)
+
+        ##
                 
     elif opcao == 0:
         print("Encerrando a execução...")
@@ -77,6 +91,6 @@ while opcao != 0:
     else:
         print("Opção incorreta. Opções disponíveis:")
         print("1 - Tocar música.")
-        print("2 - Calcular audiência.")
-        print("3 - Qual é a música?")
+        print("2 - Qual é a música?")
+        print("3 - Cadastrar nova música.")
         print("0 - Sair.")
